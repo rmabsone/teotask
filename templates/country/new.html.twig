@@ -1,0 +1,17 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}New Country{% endblock %}
+
+{% block body %}
+    <div class="container">
+        <h1 class="mt-4 mb-3">Create new Country</h1>
+
+        <div class="row">
+            <div class="col-md-6">
+                {{ include('country/_form.html.twig') }}
+            </div>
+        </div>
+
+        <a class="btn btn-secondary mt-3" href="{{ path('app_country_index') }}">Back to List</a>
+    </div>
+{% endblock %}

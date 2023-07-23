@@ -1,0 +1,96 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Country{% endblock %}
+
+{% block body %}
+
+    <div class="container">
+        <h1 class="mt-4 mb-3">Country</h1>
+
+        <div class="table-responsive">
+            <table class="table table-striped">
+                <tbody>
+                    <tr>
+                        <th>Id</th>
+                        <td id="countryid">{{ country.id }}</td>
+                    </tr>
+                    <tr>
+                        <th>Name</th>
+                        <td>{{ country.name }}</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+        <div class="row">
+            <div class="col-md-8">
+            
+                <!--edit city against country here -->
+                <p>Add Cities Against Country here</p>
+                <div class="col-md-6">
+                <input type="text" class="form-control" id="newcitytextfield" placeholder="add city"/>
+                
+                </div>
+                <span class="btn btn-warning">+</span>
+                <br><br>
+            {% for success in app.flashes('success') %}
+            <div class="alert alert-success mt-10">   {{ success }}</div>
+ 
+{% endfor %}
+  {% for error in app.flashes('error') %}
+            <div class="alert alert-danger mt-10">{{ error }}</div>
+    
+{% endfor %}
+            <div class="breadcrumb" style="margin-top:24px;" id="insertedcities">
+                <table class="table table-bordered responseive" id="citiestable">
+                <tr><th>name</th>
+                <th>action</th></tr>
+                     {% for city in cities %}
+            <tr>
+                
+                <td>{{ city.name }}</td>
+                <td><a href="deletecity?id={{city.id}}&country={{country.id}}">delete</a></td>
+                <!-- Add more columns as needed -->
+            </tr>
+        {% endfor %}
+                    
+                </table>
+            </div>
+           
+         
+            </div>
+            <div class="col-md-4" style="text-align:right;">
+                 <a class="btn btn-secondary mb-3 btn-warning" href="{{ path('app_country_index') }}">Back to List</a><br><br>
+                <a class="btn btn-primary mb-3" href="{{ path('app_country_edit', {'id': country.id}) }}">Edit</a><br><br>
+
+                {{ include('country/_delete_form.html.twig') }}
+                    </div>
+        </div>
+       
+    </div>
+    <script>
+    // When the "Add City" button is clicked
+    $('.btn-warning').click(function() {
+        // Get the city value from the input field
+        const city = $('#newcitytextfield').val();
+        const id = $('#countryid').html();
+        // Send the AJAX request
+        $.ajax({
+            url: '{{ path('addcity') }}', // Replace 'add_city' with the route name for the addCity action in CountryController
+            method: 'POST',
+            data: { city: city, id:id }, // Send the city data as JSON
+            success: function(response) {
+                // Handle the success response here (if needed)
+                console.log(response);
+                if(response){
+                    $('#citiestable').append('<tr><td>'+city+'</td> <td><a href="deletecity?id='+response+'&country='+id+'">delete</a></td></tr>')
+                }
+                
+            },
+            error: function(xhr, textStatus, errorThrown) {
+                // Handle any errors here (if needed)
+                console.error(errorThrown);
+            }
+        });
+    });
+</script>
+{% endblock %}
